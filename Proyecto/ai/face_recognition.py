@@ -5,7 +5,25 @@ from deepface import DeepFace
 
 
 # =========================================================
-# CONFIGURACIÓN
+# SMARTPARK - RECONOCIMIENTO FACIAL LEGACY
+# =========================================================
+#
+# Este modulo se conserva SOLO para el endpoint /face-legacy
+# y diagnostico local.
+#
+# El flujo de autorizacion real NO usa este embedding fijo.
+# El flujo real esta en ai/main.py:
+#
+#   imagen -> RetinaFace -> ArcFace -> embedding
+#          -> Backend /api/v1/face-profiles/match -> RDS
+#
+# El warm-up de RetinaFace + ArcFace tambien se realiza en
+# ai/main.py durante el startup del servicio.
+# =========================================================
+
+
+# =========================================================
+# CONFIGURACION LEGACY
 # =========================================================
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -21,9 +39,7 @@ DETECTOR_BACKEND = "retinaface"
 
 PERSON_NAME = "Kevin Rueda"
 
-# Resultado de nuestras pruebas:
-# Kevin       ≈ 81.85 %
-# Otra persona ≈ 30.31 %
+# Umbral historico usado unicamente por /face-legacy.
 SIMILARITY_THRESHOLD = 0.60
 
 
@@ -47,13 +63,13 @@ def cosine_similarity(vector_a, vector_b):
     return float(
         np.dot(
             vector_a,
-            vector_b
+            vector_b,
         )
     )
 
 
 # =========================================================
-# CARGAR PERFIL FACIAL
+# CARGAR PERFIL FACIAL LEGACY
 # =========================================================
 
 if not REFERENCE_EMBEDDING.exists():
@@ -73,48 +89,34 @@ reference_embedding = normalize(
 
 
 print(
-    "[FACE] Perfil facial de Kevin cargado."
+    "[FACE-LEGACY] Perfil facial local de Kevin cargado."
 )
 
 
 # =========================================================
-# RECONOCIMIENTO
+# RECONOCIMIENTO LEGACY
 # =========================================================
 
 def recognize_face(frame):
     """
-    Recibe un frame de OpenCV.
+    Reconocimiento facial local heredado.
 
-    Retorna:
-
-    {
-        "status": "ok",
-        "recognized": True,
-        "name": "Kevin Rueda",
-        "similarity": 0.81,
-        "facial_area": {...}
-    }
-
-    o:
-
-    {
-        "status": "no_face",
-        ...
-    }
+    IMPORTANTE:
+    - No se utiliza para la autorizacion principal.
+    - El flujo principal usa recognize_face_dynamic() en ai/main.py.
+    - Se mantiene solo para /face-legacy y diagnostico.
     """
 
     try:
-
         representations = DeepFace.represent(
             img_path=frame,
             model_name=MODEL_NAME,
             detector_backend=DETECTOR_BACKEND,
             enforce_detection=True,
-            align=True
+            align=True,
         )
 
         if not representations:
-
             return {
                 "status": "no_face",
                 "recognized": False,
@@ -123,61 +125,49 @@ def recognize_face(frame):
                 "facial_area": None,
             }
 
-
-        # Si aparecen varias personas,
-        # utilizamos el rostro más grande.
+        # Si aparecen varias personas, utilizamos el rostro mas grande.
         def face_size(face_data):
-
             area = face_data.get(
                 "facial_area",
-                {}
+                {},
             )
 
             width = area.get(
                 "w",
-                0
+                0,
             )
 
             height = area.get(
                 "h",
-                0
+                0,
             )
 
             return width * height
 
-
         face = max(
             representations,
-            key=face_size
+            key=face_size,
         )
-
 
         current_embedding = np.array(
             face["embedding"],
-            dtype=np.float32
+            dtype=np.float32,
         )
-
 
         similarity = cosine_similarity(
             reference_embedding,
-            current_embedding
+            current_embedding,
         )
-
 
         recognized = (
             similarity
             >= SIMILARITY_THRESHOLD
         )
 
-
         if recognized:
-
             name = PERSON_NAME
-
         else:
-
             name = "DESCONOCIDO"
-
 
         return {
             "status": "ok",
@@ -189,10 +179,8 @@ def recognize_face(frame):
             ),
         }
 
-
     except ValueError:
-
-        # RetinaFace no encontró rostro.
+        # RetinaFace no encontro rostro.
         return {
             "status": "no_face",
             "recognized": False,
@@ -201,11 +189,9 @@ def recognize_face(frame):
             "facial_area": None,
         }
 
-
     except Exception as error:
-
         print(
-            f"[FACE] Error: "
+            f"[FACE-LEGACY] Error: "
             f"{type(error).__name__}: "
             f"{error}"
         )

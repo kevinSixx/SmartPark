@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.env
+.git/
+.gitignore
+# Archivos de depuracion local que no necesita el servicio cloud
+debug_face_frame.jpg
+debug_plate_frame.jpg
+
+# ============================================================
+# SMARTPARK EDGE / INSTALLER
+# No forman parte de la imagen cloud de IA
+# ============================================================
+
+smartpark_edge_installer/
+smartpark_edge_production.py
+edge_server.py
+edge_server_demo_gpu_model_detection_v3.py

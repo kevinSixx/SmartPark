@@ -2,7 +2,11 @@
 venv/
 __pycache__/
 *.pyc
-.env
 .vscode/
 .idea/
 .DS_Store
+
+smartpark_edge_installer/
+smartpark_edge_production.py
+edge_server_demo_gpu_model_detection_v3.py
+edge_server.py

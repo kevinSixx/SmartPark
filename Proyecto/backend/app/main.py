@@ -5,6 +5,10 @@ from fastapi import (
     Request,
 )
 
+from fastapi.middleware.cors import (
+    CORSMiddleware,
+)
+
 from fastapi.responses import (
     JSONResponse,
 )
@@ -17,8 +21,24 @@ from backend.app.routes.access_events import (
     router as access_router,
 )
 
+from backend.app.routes.auth import (
+    router as auth_router,
+)
+
+from backend.app.routes.face_profiles import (
+    router as face_profiles_router,
+)
+
+from backend.app.routes.gates import (
+    router as gates_router,
+)
+
 from backend.app.routes.permissions import (
     router as permissions_router,
+)
+
+from backend.app.routes.staff import (
+    router as staff_router,
 )
 
 from backend.app.routes.users import (
@@ -41,12 +61,40 @@ logger = logging.getLogger(
 
 app = FastAPI(
     title="SmartPark UCE API",
-    version="1.1.0"
+    version="1.7.2"
 )
 
 
 # ============================================================
-# ROUTERS
+# CORS
+# ============================================================
+
+app.add_middleware(
+    CORSMiddleware,
+
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://smartpark-uce-frontend-573672769830.s3-website-us-east-1.amazonaws.com",
+        "https://production.d1kzks9pms1av2.amplifyapp.com",
+    ],
+
+    allow_credentials=True,
+
+    allow_methods=[
+        "*"
+    ],
+
+    allow_headers=[
+        "*"
+    ],
+)
+
+
+# ============================================================
+# ROUTERS EXISTENTES
 # ============================================================
 
 app.include_router(
@@ -67,6 +115,32 @@ app.include_router(
 app.include_router(
     access_router,
     prefix="/api/v1"
+)
+
+app.include_router(
+    face_profiles_router,
+    prefix="/api/v1"
+)
+
+
+# ============================================================
+# AUTENTICACION / PERSONAL / GARITAS
+# ============================================================
+#
+# Estos routers ya contienen /api/v1
+# dentro de sus propios archivos.
+# ============================================================
+
+app.include_router(
+    auth_router
+)
+
+app.include_router(
+    staff_router
+)
+
+app.include_router(
+    gates_router
 )
 
 
@@ -91,7 +165,7 @@ async def unexpected_error_handler(
         status_code=500,
         content={
             "detail":
-            "Internal server error"
+                "Internal server error"
         },
     )
 
@@ -106,8 +180,14 @@ async def unexpected_error_handler(
 def health():
 
     return {
-        "status": "ok",
-        "service": "smartpark-api"
+        "status":
+            "ok",
+
+        "service":
+            "smartpark-api",
+
+        "version":
+            "1.7.2"
     }
 
 
@@ -128,8 +208,10 @@ def db_check():
             )
         )
 
-
     return {
-        "status": "ok",
-        "database": "connected"
+        "status":
+            "ok",
+
+        "database":
+            "connected"
     }

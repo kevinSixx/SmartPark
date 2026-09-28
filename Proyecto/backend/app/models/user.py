@@ -9,7 +9,9 @@ from backend.app.database import Base
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(
+        primary_key=True
+    )
 
     name: Mapped[str] = mapped_column(
         String(120),
@@ -42,6 +44,37 @@ class User(Base):
         nullable=False
     )
 
-    vehicles: Mapped[list["Vehicle"]] = relationship(back_populates="user")
-    permissions: Mapped[list["Permission"]] = relationship(back_populates="user")
-    access_events: Mapped[list["AccessEvent"]] = relationship(back_populates="user")
+    # ========================================================
+    # RELACIONES EXISTENTES
+    # ========================================================
+
+    vehicles: Mapped[list["Vehicle"]] = relationship(
+        back_populates="user"
+    )
+
+    permissions: Mapped[list["Permission"]] = relationship(
+        back_populates="user"
+    )
+
+    access_events: Mapped[list["AccessEvent"]] = relationship(
+        back_populates="user"
+    )
+
+    # ========================================================
+    # BIOMETRIA FACIAL
+    # ========================================================
+
+    # Un único perfil biométrico por usuario.
+    face_profile: Mapped["FaceProfile | None"] = relationship(
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+
+    # Varias fotografías de enrolamiento.
+    face_samples: Mapped[list["FaceSample"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )

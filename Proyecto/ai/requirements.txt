@@ -1,38 +1,32 @@
-# SmartPark UCE - Requerimientos del servicio de IA
-# CPU / EC2
-#
-# ByteTrack viene integrado en Ultralytics.
-# ArcFace se usa como modelo dentro de DeepFace.
-# RetinaFace se usa como detector/alineador facial.
-# En Linux/EC2 usamos opencv-python-headless.
+# ============================================================
+# SMARTPARK AI 2.7
+# Python 3.11
+# ============================================================
 
-# Deteccion y seguimiento de vehiculos
+# YOLO11n + ByteTrack
 ultralytics
-torch
-torchvision
-opencv-python-headless
+lap==0.5.13
+
+# OpenCV
+opencv-python==4.10.0.84
 
 # Reconocimiento facial
-deepface
-retina-face
-tensorflow
-tf-keras
+deepface==0.0.101
+retina-face==0.0.18
+tensorflow==2.16.2
+tf-keras==2.16.0
 
-# Reconocimiento de placas / OCR
-paddlepaddle
-paddleocr
-
-# Procesamiento de imagen y datos
-numpy
+# Procesamiento
+numpy==1.26.4
 Pillow
 
-# API del servicio de IA
+# API
 fastapi
 uvicorn[standard]
 python-multipart
 
-# Comunicacion IA -> Backend
+# Comunicacion HTTP
 httpx
 
-# AWS / S3
+# AWS
 boto3

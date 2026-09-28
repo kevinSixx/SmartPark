@@ -1,0 +1,8 @@
+paddleocr==2.7.0.3
+PyMuPDF==1.20.0
+numpy==1.26.4
+opencv-python-headless
+Pillow
+fastapi
+uvicorn[standard]
+python-multipart
