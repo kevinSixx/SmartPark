@@ -21,6 +21,7 @@ import {
   getFaceProfile,
   getUsers,
 } from "../api/smartpark"
+import TableFilters from "../components/TableFilters"
 
 
 function Users() {
@@ -43,6 +44,14 @@ function Users() {
   const [saving, setSaving] = useState(false)
 
   const [success, setSuccess] = useState("")
+  const [query, setQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState("")
+  const statuses = [...new Set(users.map((user) => user.status).filter(Boolean))]
+  const filteredUsers = users.filter((user) =>
+    [user.name, user.institutional_id].some((value) =>
+      String(value || "").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
+    ) && (!statusFilter || user.status === statusFilter)
+  )
 
 
   /* ==========================================================
@@ -58,7 +67,8 @@ function Users() {
 
       const data = await getUsers()
 
-      setUsers(data)
+      const userList = Array.isArray(data) ? data : []
+      setUsers(userList)
 
 
       /*
@@ -68,7 +78,7 @@ function Users() {
 
       const initialFaceStatus = {}
 
-      data.forEach(
+      userList.forEach(
         (user) => {
           initialFaceStatus[user.id] = "loading"
         }
@@ -83,7 +93,7 @@ function Users() {
        */
 
       const results = await Promise.all(
-        data.map(
+        userList.map(
           async (user) => {
 
             try {
@@ -98,11 +108,11 @@ function Users() {
                   : "missing",
               }
 
-            } catch {
+            } catch (profileError) {
 
               return {
                 userId: user.id,
-                status: "error",
+                status: profileError.status === 404 ? "missing" : "error",
               }
 
             }
@@ -180,6 +190,7 @@ function Users() {
   async function handleCreateUser(event) {
 
     event.preventDefault()
+    if (saving) return
 
 
     if (
@@ -215,7 +226,7 @@ function Users() {
 
 
       setSuccess(
-        `Usuario ${newUser.name} creado correctamente.`
+        `Usuario ${newUser?.name || name.trim()} creado correctamente.`
       )
 
 
@@ -428,6 +439,10 @@ function Users() {
         </div>
 
 
+        <TableFilters query={query} onQueryChange={setQuery} placeholder="Buscar nombre o código"
+          count={filteredUsers.length} filters={[{ label: "Estado", value: statusFilter,
+            onChange: setStatusFilter, options: statuses.map((value) => ({ value, label: value })) }]} />
+
         {loading && users.length === 0 ? (
 
           <div className="empty-state">
@@ -436,7 +451,8 @@ function Users() {
 
         ) : (
 
-          <div className="table-wrapper">
+          filteredUsers.length === 0 ? <div className="empty-state">{users.length ? "No hay usuarios que coincidan con los filtros." : "No hay usuarios registrados."}</div> :
+          <div className="table-wrapper admin-table-scroll">
 
             <table>
 
@@ -475,34 +491,34 @@ function Users() {
 
               <tbody>
 
-                {users.map(
+                {filteredUsers.map(
                   (user) => (
 
                     <tr key={user.id}>
 
                       <td>
-                        #{user.id}
+                        {user.id != null ? `#${user.id}` : "—"}
                       </td>
 
 
                       <td>
 
                         <strong>
-                          {user.name}
+                          {user.name || "Nombre no disponible"}
                         </strong>
 
                       </td>
 
 
                       <td>
-                        {user.institutional_id}
+                        {user.institutional_id || "No disponible"}
                       </td>
 
 
                       <td>
 
                         <span className="status-badge">
-                          {user.status}
+                          {user.status || "No disponible"}
                         </span>
 
                       </td>
@@ -519,7 +535,7 @@ function Users() {
 
                       <td>
 
-                        <Link
+                        {user.id != null ? <Link
                           className="face-action-button"
                           to={
                             `/admin/users/${user.id}/face`
@@ -532,7 +548,7 @@ function Users() {
                             user.id
                           )}
 
-                        </Link>
+                        </Link> : "No disponible"}
 
                       </td>
 

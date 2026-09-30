@@ -22,6 +22,7 @@ import {
   getUsers,
   getVehicles,
 } from "../api/smartpark"
+import TableFilters from "../components/TableFilters"
 
 
 function Permissions() {
@@ -49,6 +50,13 @@ function Permissions() {
 
   const [success, setSuccess] =
     useState("")
+  const [query, setQuery] = useState("")
+  const [stateFilter, setStateFilter] = useState("")
+  const [userFilter, setUserFilter] = useState("")
+  const [vehicleFilter, setVehicleFilter] = useState("")
+  const [activeFilter, setActiveFilter] = useState("")
+  const [fromFilter, setFromFilter] = useState("")
+  const [toFilter, setToFilter] = useState("")
 
 
   /* ==========================================================
@@ -168,17 +176,11 @@ function Permissions() {
       ])
 
 
-      setPermissions(
-        permissionsData
-      )
+      setPermissions(Array.isArray(permissionsData) ? permissionsData : [])
 
-      setUsers(
-        usersData
-      )
+      setUsers(Array.isArray(usersData) ? usersData : [])
 
-      setVehicles(
-        vehiclesData
-      )
+      setVehicles(Array.isArray(vehiclesData) ? vehiclesData : [])
 
 
     } catch (err) {
@@ -318,6 +320,12 @@ function Permissions() {
   ) {
 
     event.preventDefault()
+    if (saving) return
+
+    if (users.length === 0 || vehicles.length === 0) {
+      setError("Para crear un permiso, primero registra un usuario y un vehículo asociado.")
+      return
+    }
 
 
     if (!userId) {
@@ -610,6 +618,20 @@ function Permissions() {
       (permission) =>
         permission.active
     ).length
+  const filteredPermissions = permissions.filter((permission) => {
+    const user = usersById[permission.user_id]
+    const vehicle = vehiclesById[permission.vehicle_id]
+    const matchesText = [user?.name, user?.institutional_id, vehicle?.plate, vehicle?.brand, vehicle?.model]
+      .some((value) => String(value || "").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
+    const starts = permission.valid_from ? new Date(permission.valid_from).getTime() : NaN
+    const ends = permission.valid_to ? new Date(permission.valid_to).getTime() : NaN
+    return matchesText && (!stateFilter || getPermissionState(permission).label === stateFilter)
+      && (!userFilter || String(permission.user_id) === userFilter)
+      && (!vehicleFilter || String(permission.vehicle_id) === vehicleFilter)
+      && (!activeFilter || String(Boolean(permission.active)) === activeFilter)
+      && (!fromFilter || (Number.isFinite(starts) && starts >= new Date(`${fromFilter}T00:00:00`).getTime()))
+      && (!toFilter || (Number.isFinite(ends) && ends <= new Date(`${toFilter}T23:59:59`).getTime()))
+  })
 
 
   /* ==========================================================
@@ -802,6 +824,18 @@ function Permissions() {
         </div>
 
 
+        <TableFilters query={query} onQueryChange={setQuery} placeholder="Buscar usuario o vehículo"
+          count={filteredPermissions.length} filters={[
+            { label: "Usuario", value: userFilter, onChange: setUserFilter, options: users.map((user) => ({ value: String(user.id), label: user.name || `ID ${user.id}` })) },
+            { label: "Vehículo", value: vehicleFilter, onChange: setVehicleFilter, options: vehicles.map((vehicle) => ({ value: String(vehicle.id), label: vehicle.plate || `ID ${vehicle.id}` })) },
+            { label: "Estado", value: stateFilter, onChange: setStateFilter, options: ["VIGENTE", "EXPIRADO", "PROGRAMADO", "INACTIVO"].map((value) => ({ value, label: value })) },
+            { label: "Actividad", value: activeFilter, onChange: setActiveFilter, options: [{ value: "true", label: "Activo" }, { value: "false", label: "Inactivo" }] },
+          ]} />
+        <div className="table-date-filters">
+          <label>Desde <input type="date" value={fromFilter} onChange={(event) => setFromFilter(event.target.value)} /></label>
+          <label>Hasta <input type="date" value={toFilter} onChange={(event) => setToFilter(event.target.value)} /></label>
+        </div>
+
         {loading && permissions.length === 0 ? (
 
           <div className="empty-state">
@@ -846,7 +880,8 @@ function Permissions() {
 
         ) : (
 
-          <div className="table-wrapper">
+          filteredPermissions.length === 0 ? <div className="empty-state">No hay permisos que coincidan con los filtros.</div> :
+          <div className="table-wrapper admin-table-scroll">
 
             <table>
 
@@ -885,7 +920,7 @@ function Permissions() {
 
               <tbody>
 
-                {permissions.map(
+                {filteredPermissions.map(
                   (permission) => {
 
                     const user =
@@ -937,7 +972,7 @@ function Permissions() {
                               <strong>
                                 {user?.name
                                   ||
-                                  `Usuario #${permission.user_id}`}
+                                  "No identificado"}
                               </strong>
 
                               <span>
@@ -966,7 +1001,7 @@ function Permissions() {
                               <strong>
                                 {vehicle?.plate
                                   ||
-                                  `Vehículo #${permission.vehicle_id}`}
+                                  "No identificado"}
                               </strong>
 
                               <span>
@@ -1102,6 +1137,12 @@ function Permissions() {
                 handleCreatePermission
               }
             >
+
+              {(users.length === 0 || vehicles.length === 0) && (
+                <div className="alert error">
+                  Para crear un permiso, primero registra un usuario y un vehículo asociado.
+                </div>
+              )}
 
               {/* ==============================================
                   USUARIO

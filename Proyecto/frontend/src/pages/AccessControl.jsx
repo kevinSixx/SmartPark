@@ -488,6 +488,8 @@ function AccessControl() {
 
   async function handleProcess() {
 
+    if (processing) return
+
     if (
       !faceCapture
     ) {

@@ -1,0 +1,19 @@
+tracker_type: bytetrack
+
+# Detecciones fuertes.
+track_high_thresh: 0.25
+
+# Permite utilizar detecciones débiles para conservar un vehículo.
+track_low_thresh: 0.05
+
+# Confianza mínima para crear un nuevo track.
+new_track_thresh: 0.18
+
+# Mantiene el ID aunque YOLO pierda temporalmente el vehículo.
+track_buffer: 60
+
+# Tolerancia para asociar detecciones entre frames.
+match_thresh: 0.85
+
+# Combina confianza y posición para mejorar seguimiento.
+fuse_score: True

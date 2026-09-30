@@ -1,30 +1,56 @@
 import {
   clearSession,
   getAccessToken,
-} from "../utils/session"
+} from "../utils/session.js"
 
 
 export const API_URL = (
-  import.meta.env.VITE_API_URL || ""
+  import.meta.env?.VITE_API_URL || ""
 ).replace(/\/$/, "")
 
 
-async function parseError(
-  response,
-  fallback
-) {
+async function parseError(response) {
   try {
-    const body = await response.json()
-
-    return (
-      body?.detail
-      ||
-      fallback
-    )
-
+    return (await response.json())?.detail
   } catch {
+    return null
+  }
+}
 
-    return fallback
+function apiError(response, detail, operation = "general") {
+  const status = response.status
+  const raw = typeof detail === "string" ? detail : JSON.stringify(detail ?? "")
+  let message
+
+  if (status === 401) message = "Tu sesión ha expirado. Inicia sesión nuevamente."
+  else if (status === 403) message = "No tienes permisos para realizar esta acción."
+  else if (status === 404) message = "No se encontró el recurso solicitado."
+  else if (status === 422 || status === 400) message = "Revisa los datos ingresados e inténtalo nuevamente."
+  else if (status >= 500) message = "SmartPark no está disponible temporalmente. Inténtalo nuevamente."
+  else message = "Ocurrió un problema. Inténtalo nuevamente."
+
+  if (operation === "enroll" && (status === 400 || status === 422)) {
+    message = /face|rostro|detect/i.test(raw)
+      ? "No se detectó un rostro válido en alguna fotografía. Usa imágenes claras con una sola persona."
+      : "No se pudo registrar el rostro. Revisa las fotografías e inténtalo nuevamente."
+  }
+
+  const error = new Error(message)
+  error.status = status
+  return error
+}
+
+function networkError() {
+  const error = new Error("No se pudo conectar con SmartPark. Inténtalo nuevamente.")
+  error.status = 0
+  return error
+}
+
+async function fetchSmartpark(path, options) {
+  try {
+    return await fetch(`${API_URL}${path}`, options)
+  } catch {
+    throw networkError()
   }
 }
 
@@ -55,8 +81,8 @@ async function request(
   }
 
 
-  const response = await fetch(
-    `${API_URL}${path}`,
+  const response = await fetchSmartpark(
+    path,
     {
       ...options,
       headers,
@@ -76,16 +102,7 @@ async function request(
 
   if (!response.ok) {
 
-    const detail = await parseError(
-      response,
-      "Error al comunicarse con SmartPark"
-    )
-
-    throw new Error(
-      typeof detail === "string"
-        ? detail
-        : JSON.stringify(detail)
-    )
+    throw apiError(response, await parseError(response))
   }
 
 
@@ -383,8 +400,8 @@ export async function processAccess(
   )
 
 
-  const response = await fetch(
-    `${API_URL}/api/v1/access/process`,
+  const response = await fetchSmartpark(
+    "/api/v1/access/process",
     {
       method: "POST",
       body: formData,
@@ -394,20 +411,10 @@ export async function processAccess(
 
   if (!response.ok) {
 
-    const detail = await parseError(
-      response,
-      "No se pudo procesar el acceso"
-    )
-
-    throw new Error(
-      typeof detail === "string"
-        ? detail
-        : JSON.stringify(detail)
-    )
+    throw apiError(response, await parseError(response))
   }
 
-
-  return response.json()
+  return response.status === 204 ? null : response.json()
 }
 
 
@@ -500,27 +507,6 @@ export function getGateActions(
 
 
 /* ============================================================
-   ESTADO DE GARITA
-
-   Este endpoint todavía no existe en Backend 1.7.
-   Se conserva preparado para la siguiente etapa.
-   ============================================================ */
-
-export function getGateStatus(
-  gateId = "gate-01"
-) {
-
-  return request(
-    `/api/v1/gates/${gateId}/status`,
-    {},
-    {
-      auth: true,
-    }
-  )
-}
-
-
-/* ============================================================
    PERFIL FACIAL
    ============================================================ */
 
@@ -541,6 +527,8 @@ export async function enrollFace(
 
   const formData = new FormData()
 
+  formData.append("user_id", String(userId))
+
 
   images.forEach(
     (image) => {
@@ -553,8 +541,8 @@ export async function enrollFace(
   )
 
 
-  const response = await fetch(
-    `${API_URL}/api/v1/face-profiles/${userId}/enroll`,
+  const response = await fetchSmartpark(
+    "/api/v1/face-profiles/enroll",
     {
       method: "POST",
       body: formData,
@@ -564,18 +552,8 @@ export async function enrollFace(
 
   if (!response.ok) {
 
-    const detail = await parseError(
-      response,
-      "No se pudo registrar el rostro"
-    )
-
-    throw new Error(
-      typeof detail === "string"
-        ? detail
-        : JSON.stringify(detail)
-    )
+    throw apiError(response, await parseError(response), "enroll")
   }
 
-
-  return response.json()
+  return response.status === 204 ? null : response.json()
 }

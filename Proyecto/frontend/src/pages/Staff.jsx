@@ -18,6 +18,7 @@ import {
   getStaffAccounts,
   updateStaffAccount,
 } from "../api/smartpark"
+import TableFilters from "../components/TableFilters"
 
 
 const emptyForm = {
@@ -50,6 +51,7 @@ function Staff() {
     saving,
     setSaving,
   ] = useState(false)
+  const [changingId, setChangingId] = useState(null)
 
   const [
     error,
@@ -60,6 +62,15 @@ function Staff() {
     success,
     setSuccess,
   ] = useState("")
+  const [query, setQuery] = useState("")
+  const [roleFilter, setRoleFilter] = useState("")
+  const [activeFilter, setActiveFilter] = useState("")
+  const filteredAccounts = accounts.filter((account) =>
+    [account.full_name, account.username].some((value) =>
+      String(value || "").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
+    ) && (!roleFilter || account.role === roleFilter)
+      && (!activeFilter || String(Boolean(account.active)) === activeFilter)
+  )
 
 
   const totals = useMemo(
@@ -131,9 +142,7 @@ function Staff() {
       )
 
 
-      setAccounts(
-        data
-      )
+      setAccounts(Array.isArray(data) ? data : [])
 
     } catch (
       loadError
@@ -167,6 +176,7 @@ function Staff() {
   ) {
 
     event.preventDefault()
+    if (saving) return
 
     setError(
       ""
@@ -254,7 +264,11 @@ function Staff() {
     account
   ) {
 
+    if (changingId !== null) return
+
     try {
+
+      setChangingId(account.id)
 
       setError(
         ""
@@ -290,6 +304,8 @@ function Staff() {
       setError(
         toggleError.message
       )
+    } finally {
+      setChangingId(null)
     }
   }
 
@@ -692,6 +708,14 @@ function Staff() {
           </div>
 
 
+          <TableFilters query={query} onQueryChange={setQuery} placeholder="Buscar nombre o username"
+            count={filteredAccounts.length} filters={[
+              { label: "Rol", value: roleFilter, onChange: setRoleFilter,
+                options: ["ADMIN", "GUARD"].map((value) => ({ value, label: value })) },
+              { label: "Estado", value: activeFilter, onChange: setActiveFilter,
+                options: [{ value: "true", label: "Activo" }, { value: "false", label: "Inactivo" }] },
+            ]} />
+
           {
             loading
               ? (
@@ -711,12 +735,14 @@ function Staff() {
                   </div>
 
                 )
-                : (
+                : filteredAccounts.length === 0 ? (
+                  <div className="empty-state">No hay cuentas que coincidan con los filtros.</div>
+                ) : (
 
-                  <div className="staff-account-list">
+                  <div className="staff-account-list admin-list-scroll">
 
                     {
-                      accounts.map(
+                      filteredAccounts.map(
                         (
                           account
                         ) => (
@@ -732,7 +758,7 @@ function Staff() {
 
                               <span
                                 className={
-                                  `staff-role-badge ${account.role.toLowerCase()}`
+                                  `staff-role-badge ${String(account.role || "").toLowerCase()}`
                                 }
                               >
 
@@ -747,7 +773,7 @@ function Staff() {
 
                                 <strong>
                                   {
-                                    account.full_name
+                                    account.full_name || "Nombre no disponible"
                                   }
                                 </strong>
 
@@ -755,7 +781,7 @@ function Staff() {
                                 <span>
                                   @
                                   {
-                                    account.username
+                                    account.username || "no-disponible"
                                   }
                                 </span>
 
@@ -788,6 +814,7 @@ function Staff() {
                               <button
                                 type="button"
                                 className="secondary-button compact-button"
+                                disabled={changingId !== null || loading}
                                 onClick={
                                   () =>
                                     toggleActive(
@@ -797,9 +824,11 @@ function Staff() {
                               >
 
                                 {
-                                  account.active
-                                    ? "Desactivar"
-                                    : "Activar"
+                                  changingId === account.id
+                                    ? "Guardando..."
+                                    : account.active
+                                      ? "Desactivar"
+                                      : "Activar"
                                 }
 
                               </button>

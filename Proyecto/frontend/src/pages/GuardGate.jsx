@@ -908,6 +908,7 @@ function GuardGate() {
   ) {
 
     event.preventDefault()
+    if (manualBusy) return
 
 
     if (
@@ -983,9 +984,7 @@ function GuardGate() {
 
 
         setManualNotice(
-          result?.error_message
-          ||
-          "La acción se registró, pero la apertura no pudo completarse."
+          "La acción se registró, pero la apertura no pudo completarse. Inténtalo nuevamente."
         )
       }
 
@@ -1018,6 +1017,8 @@ function GuardGate() {
 
 
   async function requestManualClose() {
+
+    if (manualBusy) return
 
     const confirmed = window.confirm(
       "¿Cerrar manualmente la barrera de Garita 01?"
@@ -1082,9 +1083,7 @@ function GuardGate() {
 
 
         setManualNotice(
-          result?.error_message
-          ||
-          "La acción se registró, pero el cierre no pudo completarse."
+          "La acción se registró, pero el cierre no pudo completarse. Inténtalo nuevamente."
         )
       }
 

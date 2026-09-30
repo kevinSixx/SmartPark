@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: smartpark
       POSTGRES_USER: smartpark
-      POSTGRES_PASSWORD: smartpark_dev
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
     ports:
       - "5432:5432"
@@ -22,6 +22,7 @@ services:
       - "1883:1883"
 
     volumes:
+      # Configuracion funcional versionada en la carpeta mosquitto/.
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
 
 volumes:

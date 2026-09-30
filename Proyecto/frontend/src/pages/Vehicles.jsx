@@ -17,6 +17,7 @@ import {
   getUsers,
   getVehicles,
 } from "../api/smartpark"
+import TableFilters from "../components/TableFilters"
 
 
 function Vehicles() {
@@ -41,6 +42,8 @@ function Vehicles() {
 
   const [success, setSuccess] =
     useState("")
+  const [query, setQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState("")
 
 
   /* ==========================================================
@@ -104,8 +107,8 @@ function Vehicles() {
         getUsers(),
       ])
 
-      setVehicles(vehicleData)
-      setUsers(userData)
+      setVehicles(Array.isArray(vehicleData) ? vehicleData : [])
+      setUsers(Array.isArray(userData) ? userData : [])
 
     } catch (err) {
 
@@ -171,7 +174,7 @@ function Vehicles() {
 
     return value
       .replace(
-        /[^a-zA-Z0-9]/g,
+        /[\s-]/g,
         ""
       )
       .toUpperCase()
@@ -187,6 +190,7 @@ function Vehicles() {
   ) {
 
     event.preventDefault()
+    if (saving) return
 
 
     if (!userId) {
@@ -205,6 +209,12 @@ function Vehicles() {
         "Ingresa la placa del vehículo."
       )
 
+      return
+    }
+
+    const normalizedPlate = normalizePlate(plate)
+    if (!/^[A-Z]{3}[0-9]{3,4}$/.test(normalizedPlate)) {
+      setError("Ingresa una placa válida, por ejemplo PAA-1234.")
       return
     }
 
@@ -246,10 +256,6 @@ function Vehicles() {
       setSuccess("")
 
 
-      const normalizedPlate =
-        normalizePlate(plate)
-
-
       const newVehicle =
         await createVehicle({
           user_id:
@@ -273,7 +279,7 @@ function Vehicles() {
 
 
       setSuccess(
-        `Vehículo ${newVehicle.plate} registrado correctamente.`
+        `Vehículo ${newVehicle?.plate || normalizedPlate} registrado correctamente.`
       )
 
 
@@ -312,6 +318,13 @@ function Vehicles() {
       (vehicle) =>
         vehicle.status === "ACTIVE"
     ).length
+  const statuses = [...new Set(vehicles.map((vehicle) => vehicle.status).filter(Boolean))]
+  const filteredVehicles = vehicles.filter((vehicle) => {
+    const owner = usersById[vehicle.user_id]
+    return [vehicle.plate, owner?.name, vehicle.brand, vehicle.model]
+      .some((value) => String(value || "").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
+      && (!statusFilter || vehicle.status === statusFilter)
+  })
 
 
   /* ==========================================================
@@ -504,6 +517,10 @@ function Vehicles() {
         </div>
 
 
+        <TableFilters query={query} onQueryChange={setQuery} placeholder="Buscar placa, propietario, marca o modelo"
+          count={filteredVehicles.length} filters={[{ label: "Estado", value: statusFilter,
+            onChange: setStatusFilter, options: statuses.map((value) => ({ value, label: value })) }]} />
+
         {loading && vehicles.length === 0 ? (
 
           <div className="empty-state">
@@ -546,7 +563,8 @@ function Vehicles() {
 
         ) : (
 
-          <div className="table-wrapper">
+          filteredVehicles.length === 0 ? <div className="empty-state">No hay vehículos que coincidan con los filtros.</div> :
+          <div className="table-wrapper admin-table-scroll">
 
             <table>
 
@@ -589,7 +607,7 @@ function Vehicles() {
 
               <tbody>
 
-                {vehicles.map(
+                {filteredVehicles.map(
                   (vehicle) => {
 
                     const owner =
@@ -606,14 +624,14 @@ function Vehicles() {
                       >
 
                         <td>
-                          #{vehicle.id}
+                          {vehicle.id != null ? `#${vehicle.id}` : "—"}
                         </td>
 
 
                         <td>
 
                           <span className="plate-badge">
-                            {vehicle.plate}
+                            {vehicle.plate || "Placa no disponible"}
                           </span>
 
                         </td>
@@ -637,13 +655,13 @@ function Vehicles() {
                               <strong>
                                 {owner?.name
                                   ||
-                                  `Usuario #${vehicle.user_id}`}
+                                  "No identificado"}
                               </strong>
 
                               <span>
                                 {owner?.institutional_id
                                   ||
-                                  ""}
+                                  "ID institucional no disponible"}
                               </span>
 
                             </div>
@@ -654,12 +672,12 @@ function Vehicles() {
 
 
                         <td>
-                          {vehicle.brand}
+                          {vehicle.brand || "No disponible"}
                         </td>
 
 
                         <td>
-                          {vehicle.model}
+                          {vehicle.model || "No disponible"}
                         </td>
 
 
@@ -669,7 +687,7 @@ function Vehicles() {
 
                             <span className="vehicle-color-dot" />
 
-                            {vehicle.color}
+                            {vehicle.color || "No disponible"}
 
                           </span>
 
@@ -688,7 +706,7 @@ function Vehicles() {
                             }
                           >
 
-                            {vehicle.status}
+                            {vehicle.status || "No disponible"}
 
                           </span>
 

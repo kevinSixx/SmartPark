@@ -1,16 +1,24 @@
-# React + Vite
+# Frontend SmartPark UCE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación React/Vite confirmada para el despliegue en AWS Amplify. Su código de interfaz permanece en `src/`, recursos en `public/`, pruebas en `tests/` y configuración en `vite.config.js`. La documentación de vistas existente está en `README_SMARTPARK_FRONTEND.md`.
 
-Currently, two official plugins are available:
+## Configuración
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+`.env.example` contiene únicamente las tres variables que consume el código actual: `VITE_API_URL` (Backend), `VITE_EDGE_URL` (Edge local) y `VITE_EDGE_STREAM_URL` (flujo `/video`). Copiar el ejemplo a `.env` solo para trabajo local. Las variables `VITE_*` se incorporan al bundle del navegador; nunca poner secretos en ellas.
 
-## React Compiler
+## Inicio y pruebas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Desde `Proyecto/frontend/`, con `node_modules` **ya existente**:
 
-## Expanding the ESLint configuration
+```powershell
+npm run dev
+npm run build
+npm run lint
+node --test tests/frontend-flows.test.js tests/openapi-contract.test.js
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Este trabajo no ejecuta `npm install` ni `npm ci`, ni cambia `package.json`/`package-lock.json`. Vite usa normalmente el puerto 5173 en desarrollo; Backend escucha en 8000 y Edge en 9000 cuando están encendidos. El frontend consume rutas `/api/v1/` del Backend y `/health`, `/status`, `/video` del Edge. No inicia barrera, cámara ni servicios AWS por sí mismo.
+
+## Errores frecuentes
+
+Si falla el build por módulos faltantes, anotar el bloqueo; no instalar ni cambiar versiones en esta fase. Si la UI muestra error de red, comprobar `VITE_API_URL`, `VITE_EDGE_URL`, CORS y que los servicios locales estén iniciados. No subir `node_modules/`, `dist/`, `.env` ni ZIP previos.

@@ -1,0 +1,62 @@
+﻿git status --short
+ M Proyecto/frontend/smartpark-amplify.zip
+ M Proyecto/frontend/smartpark-amplify/index.html
+ M Proyecto/frontend/src/App.jsx
+ M Proyecto/frontend/src/api/smartpark.js
+ M Proyecto/frontend/src/components/Sidebar.jsx
+ M Proyecto/frontend/src/index.css
+ M Proyecto/frontend/src/pages/AccessControl.jsx
+ M Proyecto/frontend/src/pages/AccessHistory.jsx
+ M Proyecto/frontend/src/pages/Dashboard.jsx
+ M Proyecto/frontend/src/pages/FaceEnrollment.jsx
+ M Proyecto/frontend/src/pages/GuardGate.jsx
+ M Proyecto/frontend/src/pages/Login.jsx
+ M Proyecto/frontend/src/pages/Permissions.jsx
+ M Proyecto/frontend/src/pages/Staff.jsx
+ M Proyecto/frontend/src/pages/Users.jsx
+ M Proyecto/frontend/src/pages/Vehicles.jsx
+?? Proyecto/docs/
+?? "Proyecto/entradav2 (1).ino"
+?? Proyecto/frontend/smartpark-amplify-v2.zip
+?? Proyecto/frontend/smartpark-amplify-v3.zip
+?? Proyecto/frontend/smartpark-amplify-v4.zip
+?? Proyecto/frontend/smartpark-amplify/assets/index-DjyQSlP3.js
+?? Proyecto/frontend/smartpark-amplify/assets/index-LqSPldNf.css
+?? Proyecto/frontend/src/components/TableFilters.jsx
+?? Proyecto/frontend/src/pages/GateAudit.jsx
+?? Proyecto/frontend/src/utils/faceEnrollment.js
+?? Proyecto/frontend/src/utils/loginValidation.js
+?? Proyecto/frontend/tests/
+
+git diff --name-status
+warning: in the working copy of 'Proyecto/frontend/smartpark-amplify/index.html', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/App.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/api/smartpark.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/components/Sidebar.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/index.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/AccessControl.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/AccessHistory.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/Dashboard.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/FaceEnrollment.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/GuardGate.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/Login.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/Permissions.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/Staff.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/Users.jsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'Proyecto/frontend/src/pages/Vehicles.jsx', LF will be replaced by CRLF the next time Git touches it
+M	Proyecto/frontend/smartpark-amplify.zip
+M	Proyecto/frontend/smartpark-amplify/index.html
+M	Proyecto/frontend/src/App.jsx
+M	Proyecto/frontend/src/api/smartpark.js
+M	Proyecto/frontend/src/components/Sidebar.jsx
+M	Proyecto/frontend/src/index.css
+M	Proyecto/frontend/src/pages/AccessControl.jsx
+M	Proyecto/frontend/src/pages/AccessHistory.jsx
+M	Proyecto/frontend/src/pages/Dashboard.jsx
+M	Proyecto/frontend/src/pages/FaceEnrollment.jsx
+M	Proyecto/frontend/src/pages/GuardGate.jsx
+M	Proyecto/frontend/src/pages/Login.jsx
+M	Proyecto/frontend/src/pages/Permissions.jsx
+M	Proyecto/frontend/src/pages/Staff.jsx
+M	Proyecto/frontend/src/pages/Users.jsx
+M	Proyecto/frontend/src/pages/Vehicles.jsx

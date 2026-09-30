@@ -1,0 +1,455 @@
+﻿git status --short
+ D Proyecto/.env
+ D Proyecto/Mosquitto/mosquitto.conf
+ D Proyecto/ai/.dockerignore
+ D Proyecto/ai/Dockerfile
+ D Proyecto/ai/__init__.py
+ D Proyecto/ai/bytetrack_smartpark.yaml
+ D Proyecto/ai/debug_face_frame.jpg
+ D Proyecto/ai/debug_plate_frame.jpg
+ D Proyecto/ai/enroll_face.py
+ D Proyecto/ai/face_recognition.py
+ D Proyecto/ai/faces/Damian/damia2.jpeg
+ D Proyecto/ai/faces/Damian/damian1.jpeg
+ D Proyecto/ai/faces/Damian/damian3.jpeg
+ D Proyecto/ai/faces/Damian/damian4.jpeg
+ D Proyecto/ai/faces/Damian/damianfotonueva2.jpeg
+ D Proyecto/ai/faces/kevin/foto1.jpeg
+ D Proyecto/ai/faces/kevin/foto2.jpeg
+ D Proyecto/ai/faces/kevin/foto3.jpeg
+ D Proyecto/ai/faces/kevin_embedding.npy
+ D Proyecto/ai/main.py
+ D Proyecto/ai/mock_esp32.py
+ D Proyecto/ai/plate_recognition.py
+ D Proyecto/ai/requirements.txt
+ D Proyecto/ai/smartpark_demo_local.py
+ D Proyecto/ai/test_cameras.py
+ D Proyecto/ai/test_face_recognition_once.py
+ D Proyecto/ai/test_plate_ocr.py
+ D Proyecto/ai/vehicle_detection.py
+ D Proyecto/ai/vehicle_tracking.py
+ D Proyecto/backend/.dockerignore
+ D Proyecto/backend/Dockerfile
+ D Proyecto/backend/alembic.ini
+ D Proyecto/backend/app/__init__.py
+ D Proyecto/backend/app/database.py
+ D Proyecto/backend/app/main.py
+ D Proyecto/backend/app/models/__init__.py
+ D Proyecto/backend/app/models/access_event.py
+ D Proyecto/backend/app/models/face_profile.py
+ D Proyecto/backend/app/models/face_sample.py
+ D Proyecto/backend/app/models/gate_action.py
+ D Proyecto/backend/app/models/permission.py
+ D Proyecto/backend/app/models/staff_account.py
+ D Proyecto/backend/app/models/user.py
+ D Proyecto/backend/app/models/vehicle.py
+ D Proyecto/backend/app/mqtt/__init__.py
+ D Proyecto/backend/app/mqtt/client.py
+ D Proyecto/backend/app/routes/__init__.py
+ D Proyecto/backend/app/routes/access_events.py
+ D Proyecto/backend/app/routes/auth.py
+ D Proyecto/backend/app/routes/face_profiles.py
+ D Proyecto/backend/app/routes/gates.py
+ D Proyecto/backend/app/routes/permissions.py
+ D Proyecto/backend/app/routes/staff.py
+ D Proyecto/backend/app/routes/users.py
+ D Proyecto/backend/app/routes/vehicles.py
+ D Proyecto/backend/app/schemas/__init__.py
+ D Proyecto/backend/app/schemas/access_event.py
+ D Proyecto/backend/app/schemas/auth.py
+ D Proyecto/backend/app/schemas/face_profile.py
+ D Proyecto/backend/app/schemas/gate_action.py
+ D Proyecto/backend/app/schemas/permission.py
+ D Proyecto/backend/app/schemas/staff_account.py
+ D Proyecto/backend/app/schemas/user.py
+ D Proyecto/backend/app/schemas/vehicle.py
+ D Proyecto/backend/app/scripts/create_admin.py
+ D Proyecto/backend/app/scripts/create_guard_tables.py
+ D Proyecto/backend/app/services/__init__.py
+ D Proyecto/backend/app/services/access_events.py
+ D Proyecto/backend/app/services/auth.py
+ D Proyecto/backend/app/services/authorization.py
+ D Proyecto/backend/app/services/face_profiles.py
+ D Proyecto/backend/app/services/gate_actions.py
+ D Proyecto/backend/app/services/permissions.py
+ D Proyecto/backend/app/services/s3_storage.py
+ D Proyecto/backend/app/services/staff_accounts.py
+ D Proyecto/backend/app/services/users.py
+ D Proyecto/backend/app/services/vehicles.py
+ D Proyecto/backend/migrations/README
+ D Proyecto/backend/migrations/env.py
+ D Proyecto/backend/migrations/script.py.mako
+ D Proyecto/backend/migrations/versions/0945aa4d18a8_add_face_profiles_and_samples.py
+ D Proyecto/backend/migrations/versions/285c86e13beb_create_vehicles_permissions_and_access_.py
+ D Proyecto/backend/migrations/versions/7f2c9d1a4b6e_add_staff_accounts_and_gate_actions.py
+ D Proyecto/backend/migrations/versions/8e1b0efdf278_add_face_profiles_and_samples.py
+ D Proyecto/backend/migrations/versions/967b3f6f02f3_add_audit_timestamps.py
+ D Proyecto/backend/migrations/versions/dda2992a9d8b_create_users_table.py
+ D Proyecto/backend/requirements.txt
+ D Proyecto/backend/tests/__init__.py
+ D Proyecto/backend/tests/conftest.py
+ D Proyecto/backend/tests/test_api.py
+ D Proyecto/certs/camera/camera-certificate.pem.crt
+ D Proyecto/certs/camera/camera-private.pem.key
+ D Proyecto/docker-compose.yml
+ D Proyecto/frontend/.env
+ D Proyecto/frontend/.gitignore
+ D Proyecto/frontend/README.md
+ D Proyecto/frontend/README_SMARTPARK_FRONTEND.md
+ D Proyecto/frontend/eslint.config.js
+ D Proyecto/frontend/index.html
+ D Proyecto/frontend/package-lock.json
+ D Proyecto/frontend/package.json
+ D Proyecto/frontend/public/favicon.svg
+ D Proyecto/frontend/public/icons.svg
+ D Proyecto/frontend/smartpark-amplify.zip
+ D Proyecto/frontend/smartpark-amplify/assets/index-B3SPRYfn.js
+ D Proyecto/frontend/smartpark-amplify/assets/index-B6i0jiIQ.css
+ D Proyecto/frontend/smartpark-amplify/favicon.svg
+ D Proyecto/frontend/smartpark-amplify/icons.svg
+ D Proyecto/frontend/smartpark-amplify/index.html
+ D Proyecto/frontend/src/App.css
+ D Proyecto/frontend/src/App.jsx
+ D Proyecto/frontend/src/api/edge.js
+ D Proyecto/frontend/src/api/smartpark.js
+ D Proyecto/frontend/src/assets/hero.png
+ D Proyecto/frontend/src/assets/react.svg
+ D Proyecto/frontend/src/assets/vite.svg
+ D Proyecto/frontend/src/components/Header.jsx
+ D Proyecto/frontend/src/components/Layout.jsx
+ D Proyecto/frontend/src/components/RequireRole.jsx
+ D Proyecto/frontend/src/components/Sidebar.jsx
+ D Proyecto/frontend/src/hooks/useApi.js
+ D Proyecto/frontend/src/index.css
+ D Proyecto/frontend/src/index.css.backup
+ D Proyecto/frontend/src/main.jsx
+ D Proyecto/frontend/src/pages/AccessControl.jsx
+ D Proyecto/frontend/src/pages/AccessHistory.jsx
+ D Proyecto/frontend/src/pages/Dashboard.jsx
+ D Proyecto/frontend/src/pages/FaceEnrollment.jsx
+ D Proyecto/frontend/src/pages/GuardGate.jsx
+ D Proyecto/frontend/src/pages/Login.jsx
+ D Proyecto/frontend/src/pages/Permissions.jsx
+ D Proyecto/frontend/src/pages/Staff.jsx
+ D Proyecto/frontend/src/pages/Users.jsx
+ D Proyecto/frontend/src/pages/Vehicles.jsx
+ D Proyecto/frontend/src/utils/formatters.js
+ D Proyecto/frontend/src/utils/session.js
+ D Proyecto/frontend/vite.config.js
+ D Proyecto/models/smartpark/face_detection_yunet_2023mar.onnx
+ D Proyecto/models/smartpark/license_plate_yolov8n.pt
+ D Proyecto/ocr/Dockerfile
+ D Proyecto/ocr/main.py
+ D Proyecto/ocr/plate_recognition.py
+ D Proyecto/ocr/requirements.txt
+ D Proyecto/yolo11n.pt
+?? .dockerignore
+?? .env.example
+?? .gitignore
+?? DELIVERY_MANIFEST.md
+?? README.md
+?? VERSION
+?? ai/
+?? backend/
+?? docker-compose.yml
+?? docs/
+?? edge/
+?? firmware/
+?? frontend/
+?? infra/
+?? ocr/
+?? sample-data/
+?? tests/
+
+git diff --stat
+ Proyecto/.env                                      |   11 -
+ Proyecto/Mosquitto/mosquitto.conf                  |    2 -
+ Proyecto/ai/.dockerignore                          |   22 -
+ Proyecto/ai/Dockerfile                             |  126 -
+ Proyecto/ai/__init__.py                            |    0
+ Proyecto/ai/bytetrack_smartpark.yaml               |   19 -
+ Proyecto/ai/debug_face_frame.jpg                   |  Bin 223223 -> 0 bytes
+ Proyecto/ai/debug_plate_frame.jpg                  |  Bin 163815 -> 0 bytes
+ Proyecto/ai/enroll_face.py                         |   75 -
+ Proyecto/ai/face_recognition.py                    |  205 --
+ Proyecto/ai/faces/Damian/damia2.jpeg               |  Bin 199717 -> 0 bytes
+ Proyecto/ai/faces/Damian/damian1.jpeg              |  Bin 192789 -> 0 bytes
+ Proyecto/ai/faces/Damian/damian3.jpeg              |  Bin 199240 -> 0 bytes
+ Proyecto/ai/faces/Damian/damian4.jpeg              |  Bin 186768 -> 0 bytes
+ Proyecto/ai/faces/Damian/damianfotonueva2.jpeg     |  Bin 159445 -> 0 bytes
+ Proyecto/ai/faces/kevin/foto1.jpeg                 |  Bin 162276 -> 0 bytes
+ Proyecto/ai/faces/kevin/foto2.jpeg                 |  Bin 177719 -> 0 bytes
+ Proyecto/ai/faces/kevin/foto3.jpeg                 |  Bin 168084 -> 0 bytes
+ Proyecto/ai/faces/kevin_embedding.npy              |  Bin 2176 -> 0 bytes
+ Proyecto/ai/main.py                                | 3058 -----------------
+ Proyecto/ai/mock_esp32.py                          |  529 ---
+ Proyecto/ai/plate_recognition.py                   |  379 ---
+ Proyecto/ai/requirements.txt                       |   32 -
+ Proyecto/ai/smartpark_demo_local.py                | 2527 --------------
+ Proyecto/ai/test_cameras.py                        |   42 -
+ Proyecto/ai/test_face_recognition_once.py          |  273 --
+ Proyecto/ai/test_plate_ocr.py                      |  360 --
+ Proyecto/ai/vehicle_detection.py                   | 1027 ------
+ Proyecto/ai/vehicle_tracking.py                    |  288 --
+ Proyecto/backend/.dockerignore                     |   22 -
+ Proyecto/backend/Dockerfile                        |   68 -
+ Proyecto/backend/alembic.ini                       |  149 -
+ Proyecto/backend/app/__init__.py                   |    0
+ Proyecto/backend/app/database.py                   |   37 -
+ Proyecto/backend/app/main.py                       |  217 --
+ Proyecto/backend/app/models/__init__.py            |   16 -
+ Proyecto/backend/app/models/access_event.py        |  126 -
+ Proyecto/backend/app/models/face_profile.py        |   90 -
+ Proyecto/backend/app/models/face_sample.py         |   78 -
+ Proyecto/backend/app/models/gate_action.py         |  106 -
+ Proyecto/backend/app/models/permission.py          |   89 -
+ Proyecto/backend/app/models/staff_account.py       |   70 -
+ Proyecto/backend/app/models/user.py                |   80 -
+ Proyecto/backend/app/models/vehicle.py             |   34 -
+ Proyecto/backend/app/mqtt/__init__.py              |    0
+ Proyecto/backend/app/mqtt/client.py                |  165 -
+ Proyecto/backend/app/routes/__init__.py            |    0
+ Proyecto/backend/app/routes/access_events.py       |  414 ---
+ Proyecto/backend/app/routes/auth.py                |   95 -
+ Proyecto/backend/app/routes/face_profiles.py       |  131 -
+ Proyecto/backend/app/routes/gates.py               |  370 --
+ Proyecto/backend/app/routes/permissions.py         |   44 -
+ Proyecto/backend/app/routes/staff.py               |  133 -
+ Proyecto/backend/app/routes/users.py               |   43 -
+ Proyecto/backend/app/routes/vehicles.py            |   46 -
+ Proyecto/backend/app/schemas/__init__.py           |    0
+ Proyecto/backend/app/schemas/access_event.py       |   60 -
+ Proyecto/backend/app/schemas/auth.py               |   63 -
+ Proyecto/backend/app/schemas/face_profile.py       |  107 -
+ Proyecto/backend/app/schemas/gate_action.py        |  113 -
+ Proyecto/backend/app/schemas/permission.py         |   51 -
+ Proyecto/backend/app/schemas/staff_account.py      |  106 -
+ Proyecto/backend/app/schemas/user.py               |   64 -
+ Proyecto/backend/app/schemas/vehicle.py            |   69 -
+ Proyecto/backend/app/scripts/create_admin.py       |  128 -
+ .../backend/app/scripts/create_guard_tables.py     |   49 -
+ Proyecto/backend/app/services/__init__.py          |    0
+ Proyecto/backend/app/services/access_events.py     |   36 -
+ Proyecto/backend/app/services/auth.py              |  292 --
+ Proyecto/backend/app/services/authorization.py     |   78 -
+ Proyecto/backend/app/services/face_profiles.py     | 1191 -------
+ Proyecto/backend/app/services/gate_actions.py      |  150 -
+ Proyecto/backend/app/services/permissions.py       |   69 -
+ Proyecto/backend/app/services/s3_storage.py        |  181 -
+ Proyecto/backend/app/services/staff_accounts.py    |  197 --
+ Proyecto/backend/app/services/users.py             |   55 -
+ Proyecto/backend/app/services/vehicles.py          |   66 -
+ Proyecto/backend/migrations/README                 |    1 -
+ Proyecto/backend/migrations/env.py                 |   83 -
+ Proyecto/backend/migrations/script.py.mako         |   28 -
+ .../0945aa4d18a8_add_face_profiles_and_samples.py  |   28 -
+ ...3beb_create_vehicles_permissions_and_access_.py |   96 -
+ ...9d1a4b6e_add_staff_accounts_and_gate_actions.py |  301 --
+ .../8e1b0efdf278_add_face_profiles_and_samples.py  |  290 --
+ .../versions/967b3f6f02f3_add_audit_timestamps.py  |  105 -
+ .../versions/dda2992a9d8b_create_users_table.py    |   42 -
+ Proyecto/backend/requirements.txt                  |   21 -
+ Proyecto/backend/tests/__init__.py                 |    0
+ Proyecto/backend/tests/conftest.py                 |   34 -
+ Proyecto/backend/tests/test_api.py                 |  191 --
+ Proyecto/certs/camera/camera-certificate.pem.crt   |   20 -
+ Proyecto/certs/camera/camera-private.pem.key       |   27 -
+ Proyecto/docker-compose.yml                        |   28 -
+ Proyecto/frontend/.env                             |    6 -
+ Proyecto/frontend/.gitignore                       |   24 -
+ Proyecto/frontend/README.md                        |   16 -
+ Proyecto/frontend/README_SMARTPARK_FRONTEND.md     |   43 -
+ Proyecto/frontend/eslint.config.js                 |   21 -
+ Proyecto/frontend/index.html                       |   13 -
+ Proyecto/frontend/package-lock.json                | 2545 --------------
+ Proyecto/frontend/package.json                     |   29 -
+ Proyecto/frontend/public/favicon.svg               |    1 -
+ Proyecto/frontend/public/icons.svg                 |   24 -
+ Proyecto/frontend/smartpark-amplify.zip            |  Bin 116954 -> 0 bytes
+ .../smartpark-amplify/assets/index-B3SPRYfn.js     |   71 -
+ .../smartpark-amplify/assets/index-B6i0jiIQ.css    |    1 -
+ Proyecto/frontend/smartpark-amplify/favicon.svg    |    1 -
+ Proyecto/frontend/smartpark-amplify/icons.svg      |   24 -
+ Proyecto/frontend/smartpark-amplify/index.html     |   14 -
+ Proyecto/frontend/src/App.css                      |  184 -
+ Proyecto/frontend/src/App.jsx                      |   72 -
+ Proyecto/frontend/src/api/edge.js                  |   52 -
+ Proyecto/frontend/src/api/smartpark.js             |  581 ----
+ Proyecto/frontend/src/assets/hero.png              |  Bin 13057 -> 0 bytes
+ Proyecto/frontend/src/assets/react.svg             |    1 -
+ Proyecto/frontend/src/assets/vite.svg              |    1 -
+ Proyecto/frontend/src/components/Header.jsx        |   63 -
+ Proyecto/frontend/src/components/Layout.jsx        |   27 -
+ Proyecto/frontend/src/components/RequireRole.jsx   |   41 -
+ Proyecto/frontend/src/components/Sidebar.jsx       |  161 -
+ Proyecto/frontend/src/hooks/useApi.js              |    0
+ Proyecto/frontend/src/index.css                    | 3563 --------------------
+ Proyecto/frontend/src/index.css.backup             | 1457 --------
+ Proyecto/frontend/src/main.jsx                     |   28 -
+ Proyecto/frontend/src/pages/AccessControl.jsx      | 1380 --------
+ Proyecto/frontend/src/pages/AccessHistory.jsx      |  981 ------
+ Proyecto/frontend/src/pages/Dashboard.jsx          |  388 ---
+ Proyecto/frontend/src/pages/FaceEnrollment.jsx     | 1337 --------
+ Proyecto/frontend/src/pages/GuardGate.jsx          | 2398 -------------
+ Proyecto/frontend/src/pages/Login.jsx              |  305 --
+ Proyecto/frontend/src/pages/Permissions.jsx        | 1393 --------
+ Proyecto/frontend/src/pages/Staff.jsx              |  827 -----
+ Proyecto/frontend/src/pages/Users.jsx              |  701 ----
+ Proyecto/frontend/src/pages/Vehicles.jsx           | 1008 ------
+ Proyecto/frontend/src/utils/formatters.js          |    0
+ Proyecto/frontend/src/utils/session.js             |   29 -
+ Proyecto/frontend/vite.config.js                   |    7 -
+ .../smartpark/face_detection_yunet_2023mar.onnx    |  Bin 232589 -> 0 bytes
+ Proyecto/models/smartpark/license_plate_yolov8n.pt |  Bin 6245603 -> 0 bytes
+ Proyecto/ocr/Dockerfile                            |   21 -
+ Proyecto/ocr/main.py                               | 1185 -------
+ Proyecto/ocr/plate_recognition.py                  |  218 --
+ Proyecto/ocr/requirements.txt                      |    8 -
+ Proyecto/yolo11n.pt                                |  Bin 5613764 -> 0 bytes
+ 144 files changed, 37268 deletions(-)
+
+git diff --name-status
+D	Proyecto/.env
+D	Proyecto/Mosquitto/mosquitto.conf
+D	Proyecto/ai/.dockerignore
+D	Proyecto/ai/Dockerfile
+D	Proyecto/ai/__init__.py
+D	Proyecto/ai/bytetrack_smartpark.yaml
+D	Proyecto/ai/debug_face_frame.jpg
+D	Proyecto/ai/debug_plate_frame.jpg
+D	Proyecto/ai/enroll_face.py
+D	Proyecto/ai/face_recognition.py
+D	Proyecto/ai/faces/Damian/damia2.jpeg
+D	Proyecto/ai/faces/Damian/damian1.jpeg
+D	Proyecto/ai/faces/Damian/damian3.jpeg
+D	Proyecto/ai/faces/Damian/damian4.jpeg
+D	Proyecto/ai/faces/Damian/damianfotonueva2.jpeg
+D	Proyecto/ai/faces/kevin/foto1.jpeg
+D	Proyecto/ai/faces/kevin/foto2.jpeg
+D	Proyecto/ai/faces/kevin/foto3.jpeg
+D	Proyecto/ai/faces/kevin_embedding.npy
+D	Proyecto/ai/main.py
+D	Proyecto/ai/mock_esp32.py
+D	Proyecto/ai/plate_recognition.py
+D	Proyecto/ai/requirements.txt
+D	Proyecto/ai/smartpark_demo_local.py
+D	Proyecto/ai/test_cameras.py
+D	Proyecto/ai/test_face_recognition_once.py
+D	Proyecto/ai/test_plate_ocr.py
+D	Proyecto/ai/vehicle_detection.py
+D	Proyecto/ai/vehicle_tracking.py
+D	Proyecto/backend/.dockerignore
+D	Proyecto/backend/Dockerfile
+D	Proyecto/backend/alembic.ini
+D	Proyecto/backend/app/__init__.py
+D	Proyecto/backend/app/database.py
+D	Proyecto/backend/app/main.py
+D	Proyecto/backend/app/models/__init__.py
+D	Proyecto/backend/app/models/access_event.py
+D	Proyecto/backend/app/models/face_profile.py
+D	Proyecto/backend/app/models/face_sample.py
+D	Proyecto/backend/app/models/gate_action.py
+D	Proyecto/backend/app/models/permission.py
+D	Proyecto/backend/app/models/staff_account.py
+D	Proyecto/backend/app/models/user.py
+D	Proyecto/backend/app/models/vehicle.py
+D	Proyecto/backend/app/mqtt/__init__.py
+D	Proyecto/backend/app/mqtt/client.py
+D	Proyecto/backend/app/routes/__init__.py
+D	Proyecto/backend/app/routes/access_events.py
+D	Proyecto/backend/app/routes/auth.py
+D	Proyecto/backend/app/routes/face_profiles.py
+D	Proyecto/backend/app/routes/gates.py
+D	Proyecto/backend/app/routes/permissions.py
+D	Proyecto/backend/app/routes/staff.py
+D	Proyecto/backend/app/routes/users.py
+D	Proyecto/backend/app/routes/vehicles.py
+D	Proyecto/backend/app/schemas/__init__.py
+D	Proyecto/backend/app/schemas/access_event.py
+D	Proyecto/backend/app/schemas/auth.py
+D	Proyecto/backend/app/schemas/face_profile.py
+D	Proyecto/backend/app/schemas/gate_action.py
+D	Proyecto/backend/app/schemas/permission.py
+D	Proyecto/backend/app/schemas/staff_account.py
+D	Proyecto/backend/app/schemas/user.py
+D	Proyecto/backend/app/schemas/vehicle.py
+D	Proyecto/backend/app/scripts/create_admin.py
+D	Proyecto/backend/app/scripts/create_guard_tables.py
+D	Proyecto/backend/app/services/__init__.py
+D	Proyecto/backend/app/services/access_events.py
+D	Proyecto/backend/app/services/auth.py
+D	Proyecto/backend/app/services/authorization.py
+D	Proyecto/backend/app/services/face_profiles.py
+D	Proyecto/backend/app/services/gate_actions.py
+D	Proyecto/backend/app/services/permissions.py
+D	Proyecto/backend/app/services/s3_storage.py
+D	Proyecto/backend/app/services/staff_accounts.py
+D	Proyecto/backend/app/services/users.py
+D	Proyecto/backend/app/services/vehicles.py
+D	Proyecto/backend/migrations/README
+D	Proyecto/backend/migrations/env.py
+D	Proyecto/backend/migrations/script.py.mako
+D	Proyecto/backend/migrations/versions/0945aa4d18a8_add_face_profiles_and_samples.py
+D	Proyecto/backend/migrations/versions/285c86e13beb_create_vehicles_permissions_and_access_.py
+D	Proyecto/backend/migrations/versions/7f2c9d1a4b6e_add_staff_accounts_and_gate_actions.py
+D	Proyecto/backend/migrations/versions/8e1b0efdf278_add_face_profiles_and_samples.py
+D	Proyecto/backend/migrations/versions/967b3f6f02f3_add_audit_timestamps.py
+D	Proyecto/backend/migrations/versions/dda2992a9d8b_create_users_table.py
+D	Proyecto/backend/requirements.txt
+D	Proyecto/backend/tests/__init__.py
+D	Proyecto/backend/tests/conftest.py
+D	Proyecto/backend/tests/test_api.py
+D	Proyecto/certs/camera/camera-certificate.pem.crt
+D	Proyecto/certs/camera/camera-private.pem.key
+D	Proyecto/docker-compose.yml
+D	Proyecto/frontend/.env
+D	Proyecto/frontend/.gitignore
+D	Proyecto/frontend/README.md
+D	Proyecto/frontend/README_SMARTPARK_FRONTEND.md
+D	Proyecto/frontend/eslint.config.js
+D	Proyecto/frontend/index.html
+D	Proyecto/frontend/package-lock.json
+D	Proyecto/frontend/package.json
+D	Proyecto/frontend/public/favicon.svg
+D	Proyecto/frontend/public/icons.svg
+D	Proyecto/frontend/smartpark-amplify.zip
+D	Proyecto/frontend/smartpark-amplify/assets/index-B3SPRYfn.js
+D	Proyecto/frontend/smartpark-amplify/assets/index-B6i0jiIQ.css
+D	Proyecto/frontend/smartpark-amplify/favicon.svg
+D	Proyecto/frontend/smartpark-amplify/icons.svg
+D	Proyecto/frontend/smartpark-amplify/index.html
+D	Proyecto/frontend/src/App.css
+D	Proyecto/frontend/src/App.jsx
+D	Proyecto/frontend/src/api/edge.js
+D	Proyecto/frontend/src/api/smartpark.js
+D	Proyecto/frontend/src/assets/hero.png
+D	Proyecto/frontend/src/assets/react.svg
+D	Proyecto/frontend/src/assets/vite.svg
+D	Proyecto/frontend/src/components/Header.jsx
+D	Proyecto/frontend/src/components/Layout.jsx
+D	Proyecto/frontend/src/components/RequireRole.jsx
+D	Proyecto/frontend/src/components/Sidebar.jsx
+D	Proyecto/frontend/src/hooks/useApi.js
+D	Proyecto/frontend/src/index.css
+D	Proyecto/frontend/src/index.css.backup
+D	Proyecto/frontend/src/main.jsx
+D	Proyecto/frontend/src/pages/AccessControl.jsx
+D	Proyecto/frontend/src/pages/AccessHistory.jsx
+D	Proyecto/frontend/src/pages/Dashboard.jsx
+D	Proyecto/frontend/src/pages/FaceEnrollment.jsx
+D	Proyecto/frontend/src/pages/GuardGate.jsx
+D	Proyecto/frontend/src/pages/Login.jsx
+D	Proyecto/frontend/src/pages/Permissions.jsx
+D	Proyecto/frontend/src/pages/Staff.jsx
+D	Proyecto/frontend/src/pages/Users.jsx
+D	Proyecto/frontend/src/pages/Vehicles.jsx
+D	Proyecto/frontend/src/utils/formatters.js
+D	Proyecto/frontend/src/utils/session.js
+D	Proyecto/frontend/vite.config.js
+D	Proyecto/models/smartpark/face_detection_yunet_2023mar.onnx
+D	Proyecto/models/smartpark/license_plate_yolov8n.pt
+D	Proyecto/ocr/Dockerfile
+D	Proyecto/ocr/main.py
+D	Proyecto/ocr/plate_recognition.py
+D	Proyecto/ocr/requirements.txt
+D	Proyecto/yolo11n.pt

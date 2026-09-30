@@ -60,9 +60,7 @@ function Dashboard() {
             backendData
           )
 
-          setUsers(
-            usersData
-          )
+          setUsers(Array.isArray(usersData) ? usersData : [])
 
         } catch (err) {
 

@@ -71,7 +71,7 @@ RUN python -m pip install \
 # YOLO11n
 # ============================================================
 
-COPY yolo11n.pt /app/yolo11n.pt
+COPY edge/models/yolo11n.pt /app/yolo11n.pt
 
 
 # ============================================================

@@ -1,12 +1,83 @@
+# Python: entornos, caches y resultados de pruebas
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
 .venv/
 venv/
-__pycache__/
-*.pyc
+env/
+
+# Node / Vite y artefactos compilados
+node_modules/
+dist/
+build/
+.vite/
+/frontend/smartpark-amplify/
+/smartpark_edge_installer/installer/output/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editores y sistema operativo
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
-smartpark_edge_installer/
-smartpark_edge_production.py
-edge_server_demo_gpu_model_detection_v3.py
-edge_server.py
+# Configuracion local y secretos (conservar los ejemplos)
+.env
+.env.*
+!.env.example
+secrets.h
+credentials.h
+*.pem
+*.key
+*.ppk
+*.crt
+*.p12
+*.pfx
+*.p8
+*.jks
+*.keystore
+certs/
+local-private/
+smartpark_edge_config.json
+
+# Datos personales y capturas locales de depuracion
+faces/
+embeddings/
+debug_images/
+debug_photos/
+debug_*.jpg
+debug_*.jpeg
+debug_*.png
+*.embedding
+*.npy
+
+# Logs y temporales
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.swp
+*.swo
+~*
+
+# Paquetes y ejecutables generados; conservar fuentes del instalador
+# El peso canónico para IA está en edge/models/yolo11n.pt.
+/yolo11n.pt
+*.zip
+*.rar
+*.exe

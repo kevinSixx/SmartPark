@@ -1,6 +1,7 @@
 import {
   CarFront,
   DoorOpen,
+  ClipboardList,
   History,
   LayoutDashboard,
   LogOut,
@@ -45,6 +46,11 @@ const adminMenu = [
     to: "/admin/history",
     label: "Historial",
     icon: History,
+  },
+  {
+    to: "/admin/gate-audit",
+    label: "Auditoría de barrera",
+    icon: ClipboardList,
   },
   {
     to: "/admin/access-test",

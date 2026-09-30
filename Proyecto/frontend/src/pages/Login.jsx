@@ -19,6 +19,7 @@ import {
 import {
   setSession,
 } from "../utils/session"
+import { loginErrorMessage, validateLogin } from "../utils/loginValidation"
 
 
 function Login() {
@@ -72,22 +73,16 @@ function Login() {
   ) {
 
     event.preventDefault()
+    if (loading) return
 
     setError(
       ""
     )
 
 
-    if (
-      !username.trim()
-      ||
-      !password
-    ) {
-
-      setError(
-        "Ingresa usuario y contraseña."
-      )
-
+    const validationError = validateLogin(username, password)
+    if (validationError) {
+      setError(validationError)
       return
     }
 
@@ -142,7 +137,7 @@ function Login() {
     ) {
 
       setError(
-        loginError.message
+        loginErrorMessage(loginError.status)
       )
 
     } finally {

@@ -1,0 +1,19 @@
+{
+  "gate_id": "gate-01",
+  "camera_source": "auto",
+  "device": "auto",
+  "sensor_mode": "real",
+  "show_local_window": true,
+  "backend_url": "http://127.0.0.1:8000",
+  "edge_host": "127.0.0.1",
+  "edge_port": 9000,
+  "camera_width": 1280,
+  "camera_height": 720,
+  "iot": {
+    "client_id": "smartpark-camera-gate-01",
+    "detection_topic": "smartpark/gates/gate-01/detection",
+    "root_ca": "certs/camera/AmazonRootCA1.pem",
+    "certificate": "certs/camera/camera-certificate.pem.crt",
+    "private_key": "certs/camera/camera-private.pem.key"
+  }
+}

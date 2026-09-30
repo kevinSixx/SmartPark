@@ -376,6 +376,137 @@ a {
   overflow-x: auto;
 }
 
+.admin-table-scroll {
+  max-height: min(62vh, 680px);
+  overflow: auto;
+}
+
+.admin-table-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  box-shadow: 0 1px 0 #edf0f4;
+}
+
+.table-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 22px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.table-filters input,.table-filters select {
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 1px solid #dbe2ea;
+  border-radius: 9px;
+  background: #fff;
+  color: #172033;
+  outline: none;
+}
+
+.table-filters input {
+  flex: 1 1 230px;
+  min-width: 0;
+}
+
+.table-filters input:focus,.table-filters select:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,.12);
+}
+
+.table-filter-count {
+  color: #7b8798;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.table-date-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 22px 14px;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.table-date-filters label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #627084;
+  font-size: .8rem;
+}
+
+.table-date-filters input {
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 1px solid #dbe2ea;
+  border-radius: 9px;
+  color: #172033;
+  background: #fff;
+}
+
+.admin-list-scroll {
+  max-height: min(62vh, 680px);
+  overflow-y: auto;
+}
+
+.table-row-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #176c43;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+}
+
+.gate-audit-row { cursor: pointer; }
+
+.gate-audit-modal {
+  width: min(620px,100%);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+.gate-audit-details {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 22px 24px 24px;
+}
+
+.gate-audit-details div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #e3e8ef;
+  border-radius: 10px;
+  background: #fafbfd;
+}
+
+.gate-audit-details dt {
+  color: #7b8798;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.gate-audit-details dd {
+  margin: 5px 0 0;
+  color: #172033;
+  font-size: 13px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width:600px) {
+  .table-filters select { flex: 1 1 125px; min-width: 0; }
+  .table-filter-count { width: 100%; }
+  .gate-audit-details { grid-template-columns: 1fr; }
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

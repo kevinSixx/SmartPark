@@ -19,6 +19,7 @@ import {
   getUsers,
   getVehicles,
 } from "../api/smartpark"
+import TableFilters from "../components/TableFilters"
 
 
 function AccessHistory() {
@@ -37,6 +38,9 @@ function AccessHistory() {
 
   const [error, setError] =
     useState("")
+  const [query, setQuery] = useState("")
+  const [eventFilter, setEventFilter] = useState("")
+  const [decisionFilter, setDecisionFilter] = useState("")
 
 
   /* ==========================================================
@@ -120,7 +124,7 @@ function AccessHistory() {
        */
 
       const sortedEvents =
-        [...eventsData].sort(
+        [...(Array.isArray(eventsData) ? eventsData : [])].sort(
           (a, b) => {
 
             const dateA =
@@ -143,13 +147,9 @@ function AccessHistory() {
         sortedEvents
       )
 
-      setUsers(
-        usersData
-      )
+      setUsers(Array.isArray(usersData) ? usersData : [])
 
-      setVehicles(
-        vehiclesData
-      )
+      setVehicles(Array.isArray(vehiclesData) ? vehiclesData : [])
 
 
     } catch (err) {
@@ -427,6 +427,15 @@ function AccessHistory() {
         ===
         "ENTRY"
     ).length
+  const filteredEvents = events.filter((event) => {
+    const user = usersById[event.user_id]
+    const vehicle = vehiclesById[event.vehicle_id]
+    const matchesText = [user?.name, user?.institutional_id, vehicle?.plate, event.detected_plate]
+      .some((value) => String(value || "").toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
+    const decision = String(event.decision || "").toUpperCase()
+    return matchesText && (!eventFilter || event.event_type === eventFilter)
+      && (!decisionFilter || decision === decisionFilter || (decisionFilter === "REJECTED" && decision === "DENIED"))
+  })
 
 
   /* ==========================================================
@@ -635,6 +644,14 @@ function AccessHistory() {
         </div>
 
 
+        <TableFilters query={query} onQueryChange={setQuery} placeholder="Buscar persona o placa"
+          count={filteredEvents.length} filters={[
+            { label: "Movimiento", value: eventFilter, onChange: setEventFilter,
+              options: ["ENTRY", "EXIT"].map((value) => ({ value, label: value })) },
+            { label: "Decisión", value: decisionFilter, onChange: setDecisionFilter,
+              options: ["AUTHORIZED", "REJECTED", "REVIEW"].map((value) => ({ value, label: value })) },
+          ]} />
+
         {loading && events.length === 0 ? (
 
           <div className="empty-state">
@@ -654,7 +671,8 @@ function AccessHistory() {
 
         ) : (
 
-          <div className="table-wrapper">
+          filteredEvents.length === 0 ? <div className="empty-state">No hay eventos que coincidan con los filtros.</div> :
+          <div className="table-wrapper admin-table-scroll">
 
             <table>
 
@@ -705,7 +723,7 @@ function AccessHistory() {
 
               <tbody>
 
-                {events.map(
+                {filteredEvents.map(
                   (event) => {
 
                     const user =
@@ -818,9 +836,7 @@ function AccessHistory() {
                           ) : (
 
                             <span>
-                              {event.user_id
-                                ? `Usuario #${event.user_id}`
-                                : "No identificado"}
+                              No identificado
                             </span>
 
                           )}
@@ -861,9 +877,7 @@ function AccessHistory() {
                           ) : (
 
                             <span>
-                              {event.vehicle_id
-                                ? `Vehículo #${event.vehicle_id}`
-                                : "No identificado"}
+                              No identificado
                             </span>
 
                           )}

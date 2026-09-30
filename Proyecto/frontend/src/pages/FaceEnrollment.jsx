@@ -26,17 +26,19 @@ import {
   getFaceProfile,
   getUser,
 } from "../api/smartpark"
+import {
+  FACE_IMAGE_TYPES,
+  faceFileSignature,
+  loadUserFaceState,
+  MAX_FACE_IMAGES,
+  MIN_FACE_IMAGES,
+  validateFaceFile,
+  validateFaceImageCount,
+} from "../utils/faceEnrollment"
 
 
-const MAX_IMAGES = 5
-const MIN_IMAGES = 3
-const MAX_FILE_SIZE = 10 * 1024 * 1024
-
-const ACCEPTED_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-]
+const MAX_IMAGES = MAX_FACE_IMAGES
+const MIN_IMAGES = MIN_FACE_IMAGES
 
 
 function FaceEnrollment() {
@@ -57,6 +59,9 @@ function FaceEnrollment() {
 
   const [hasProfile, setHasProfile] =
     useState(false)
+
+  const [userMissing, setUserMissing] = useState(false)
+  const submittingRef = useRef(false)
 
   const [mode, setMode] =
     useState("camera")
@@ -106,23 +111,19 @@ function FaceEnrollment() {
           setLoadingUser(true)
           setError("")
 
-          const [
-            userData,
-            faceProfile,
-          ] = await Promise.all([
-            getUser(userId),
-            getFaceProfile(userId),
-          ])
-
-          setUser(userData)
-
-          setHasProfile(
-            Boolean(faceProfile)
-          )
+          setUserMissing(false)
+          setUser(null)
+          const state = await loadUserFaceState(userId, getUser, getFaceProfile)
+          setUser(state.user)
+          setHasProfile(state.hasProfile)
+          if (state.profileError) setError(state.profileError.message)
 
         } catch (err) {
 
-          setError(err.message)
+          setUserMissing(err.status === 404)
+          setError(err.status === 404
+            ? "Usuario no encontrado. Regresa a Usuarios y verifica el registro."
+            : err.message)
 
         } finally {
 
@@ -332,6 +333,8 @@ function FaceEnrollment() {
 
   function handleFileSelection(event) {
 
+    if (registering || userMissing || !user) return
+
     const selectedFiles =
       Array.from(
         event.target.files || []
@@ -348,36 +351,17 @@ function FaceEnrollment() {
 
 
     const validFiles = []
+    const knownFiles = new Set(images.map(({ file }) => faceFileSignature(file)))
 
 
     for (const file of selectedFiles) {
 
-      if (
-        !ACCEPTED_TYPES.includes(
-          file.type
-        )
-      ) {
-
-        setError(
-          `El archivo "${file.name}" no tiene un formato permitido. Usa JPG, PNG o WEBP.`
-        )
-
+      const validationError = validateFaceFile(file, knownFiles)
+      if (validationError) {
+        setError(validationError)
         continue
       }
-
-
-      if (
-        file.size > MAX_FILE_SIZE
-      ) {
-
-        setError(
-          `El archivo "${file.name}" supera el límite de 10 MB.`
-        )
-
-        continue
-      }
-
-
+      knownFiles.add(faceFileSignature(file))
       validFiles.push(file)
 
     }
@@ -438,6 +422,8 @@ function FaceEnrollment() {
      ========================================================== */
 
   function capturePhoto() {
+
+    if (registering || userMissing || !user) return
 
     if (!cameraActive) {
 
@@ -541,12 +527,13 @@ function FaceEnrollment() {
           )
 
 
-        setImages(
-          (current) => [
-            ...current,
-            item,
-          ]
-        )
+        setImages((current) => {
+          if (current.length >= MAX_IMAGES) {
+            URL.revokeObjectURL(item.preview)
+            return current
+          }
+          return [...current, item]
+        })
 
 
         setError("")
@@ -564,6 +551,8 @@ function FaceEnrollment() {
      ========================================================== */
 
   function removeImage(imageId) {
+
+    if (registering) return
 
     setImages(
       (current) => {
@@ -608,30 +597,16 @@ function FaceEnrollment() {
 
   async function handleEnroll() {
 
-    if (
-      images.length < MIN_IMAGES
-    ) {
+    if (submittingRef.current || registering || userMissing || !user) return
 
-      setError(
-        `Selecciona o captura al menos ${MIN_IMAGES} fotografías.`
-      )
-
+    const countError = validateFaceImageCount(images.length)
+    if (countError) {
+      setError(countError)
       return
     }
 
 
-    if (
-      images.length > MAX_IMAGES
-    ) {
-
-      setError(
-        `Solo puedes utilizar hasta ${MAX_IMAGES} fotografías.`
-      )
-
-      return
-    }
-
-
+    submittingRef.current = true
     try {
 
       setRegistering(true)
@@ -661,18 +636,18 @@ function FaceEnrollment() {
           : "Rostro registrado correctamente",
 
         samples:
-          result.samples_used
+          result?.samples_used
           ??
-          result.samples
+          result?.samples
           ??
           images.length,
 
         dimension:
-          result.embedding_dimension
+          result?.embedding_dimension
           ??
-          result.dimension
+          result?.dimension
           ??
-          512,
+          null,
       })
 
 
@@ -685,6 +660,7 @@ function FaceEnrollment() {
     } finally {
 
       setRegistering(false)
+      submittingRef.current = false
 
     }
   }
@@ -705,6 +681,15 @@ function FaceEnrollment() {
 
       </section>
     )
+  }
+
+  if (userMissing || !user) {
+    return <section>
+      <div className="alert error">{error || "No se pudo cargar el usuario. Inténtalo nuevamente."}</div>
+      <button className="secondary-button" type="button" onClick={() => navigate("/admin/users")}>
+        <ArrowLeft size={18} /> Volver a Usuarios
+      </button>
+    </section>
   }
 
 
@@ -805,15 +790,15 @@ function FaceEnrollment() {
               <div>
 
                 <strong>
-                  {user?.name}
+                  {user.name || "Nombre no disponible"}
                 </strong>
 
                 <span>
-                  {user?.institutional_id}
+                  {user.institutional_id || "ID institucional no disponible"}
                 </span>
 
                 <span>
-                  Usuario #{user?.id}
+                  ID: {user.id ?? userId}
                 </span>
 
               </div>
@@ -897,6 +882,7 @@ function FaceEnrollment() {
 
               <button
                 type="button"
+                disabled={registering}
                 className={
                   mode === "camera"
                     ? "mode-button active"
@@ -917,6 +903,7 @@ function FaceEnrollment() {
 
               <button
                 type="button"
+                disabled={registering}
                 className={
                   mode === "files"
                     ? "mode-button active"
@@ -1124,7 +1111,8 @@ function FaceEnrollment() {
 
                 <input
                   type="file"
-                  accept="image/jpeg,image/png,image/webp"
+                  disabled={registering || images.length >= MAX_IMAGES}
+                  accept={FACE_IMAGE_TYPES.join(",")}
                   multiple
                   onChange={
                     handleFileSelection
@@ -1219,6 +1207,7 @@ function FaceEnrollment() {
 
                       <button
                         type="button"
+                        disabled={registering}
                         onClick={
                           () =>
                             removeImage(
@@ -1282,13 +1271,12 @@ function FaceEnrollment() {
                   </strong>
 
                   <span>
-                    {user?.name}
+                    {user.name || "Usuario"}
                     {" · "}
                     {success.samples}
                     {" "}
                     fotos
-                    {" · "}
-                    {success.dimension}D
+                    {success.dimension ? ` · ${success.dimension}D` : ""}
                   </span>
 
                 </div>
@@ -1310,6 +1298,8 @@ function FaceEnrollment() {
                 registering
                 ||
                 images.length < MIN_IMAGES
+                ||
+                images.length > MAX_IMAGES
               }
             >
 

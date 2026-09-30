@@ -1,0 +1,9 @@
+# 06. Auditoría OCR
+
+`ocr/main.py` es FastAPI 1.1.0 con `GET /health` y `POST /plate` (multipart `image`). Instancia `PaddleOCR(use_angle_cls=True, lang='en', use_gpu=False)` al importar (`:47-58`); puede preparar o descargar modelos. Normaliza texto (`:181+`), selecciona tokens y candidatos, aplica variantes de preprocesamiento con escala/grises, CLAHE y enfoque (`:805-860`), filtra por confianza (`MIN_TEXT_CONFIDENCE=0.25`, `MIN_FINAL_CONFIDENCE=0.35`) y devuelve placa/confianza o resultado sin placa. `ocr/plate_recognition.py` contiene **otra** instancia de PaddleOCR y lógica distinta; no la importa `ocr/main.py`. Es candidata histórica, no eliminación aprobada.
+
+`ocr/Dockerfile` parte de `paddlepaddle/paddle:2.6.2`, instala `ocr/requirements.txt` si el contexto de build es `ocr/`, copia `.` a `/app/ocr`, expone 8002 y ejecuta `uvicorn ocr.main:app`. El `requirements.txt` fija `paddleocr==2.7.0.3`, NumPy 1.26.4 y PyMuPDF 1.20.0, pero deja varias versiones sin fijar. Verificar compatibilidad real Paddle/PaddleOCR en build controlado; aquí no se construyó imagen.
+
+La comunicación **AI → OCR** está en `ai/main.py:100-105,2462-2490`: HTTP `POST` multipart a `OCR_SERVICE_URL`, por defecto `http://smartpark_ocr:8002/plate`. Ese hostname solo funciona si existe un contenedor/servicio con ese nombre en la misma red Docker. El Compose actual no define OCR ni AI; por tanto no demuestra red Docker funcional. En un arranque directo mismo host hay que configurar `OCR_SERVICE_URL=http://127.0.0.1:8002/plate`. No se encontró que IA llame OCR por `localhost` por defecto. No hay CORS configurado en OCR; no hace falta para llamada servidor a servidor.
+
+Para probar OCR aislado se necesita imagen local de placa con consentimiento y modelos PaddleOCR disponibles; un `GET /health` solo verifica proceso y carga, no precisión. Mantener muestras anonimizadas y evaluar formato, OCR incorrecto y ausencia de placa.

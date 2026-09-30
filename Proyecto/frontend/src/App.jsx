@@ -11,6 +11,7 @@ import AccessControl from "./pages/AccessControl"
 import AccessHistory from "./pages/AccessHistory"
 import Dashboard from "./pages/Dashboard"
 import FaceEnrollment from "./pages/FaceEnrollment"
+import GateAudit from "./pages/GateAudit"
 import GuardGate from "./pages/GuardGate"
 import Login from "./pages/Login"
 import Permissions from "./pages/Permissions"
@@ -54,6 +55,7 @@ function App() {
         <Route path="/admin/vehicles" element={<Vehicles />} />
         <Route path="/admin/permissions" element={<Permissions />} />
         <Route path="/admin/history" element={<AccessHistory />} />
+        <Route path="/admin/gate-audit" element={<GateAudit />} />
         <Route path="/admin/access-test" element={<AccessControl />} />
         <Route path="/admin/staff" element={<Staff />} />
       </Route>
