@@ -72,26 +72,30 @@ def cosine_similarity(vector_a, vector_b):
 # CARGAR PERFIL FACIAL LEGACY
 # =========================================================
 
-if not REFERENCE_EMBEDDING.exists():
-    raise FileNotFoundError(
-        f"No existe el perfil facial: "
-        f"{REFERENCE_EMBEDDING}"
+reference_embedding = None
+
+if REFERENCE_EMBEDDING.exists():
+
+    reference_embedding = np.load(
+        REFERENCE_EMBEDDING
     )
 
+    reference_embedding = normalize(
+        reference_embedding
+    )
 
-reference_embedding = np.load(
-    REFERENCE_EMBEDDING
-)
+    print(
+        "[FACE-LEGACY] Perfil facial local cargado."
+    )
 
-reference_embedding = normalize(
-    reference_embedding
-)
+else:
 
-
-print(
-    "[FACE-LEGACY] Perfil facial local de Kevin cargado."
-)
-
+    print(
+        "[FACE-LEGACY] ADVERTENCIA: "
+        "No existe el perfil facial legacy: "
+        f"{REFERENCE_EMBEDDING}. "
+        "El servicio principal continuará funcionando."
+    )
 
 # =========================================================
 # RECONOCIMIENTO LEGACY
@@ -107,6 +111,15 @@ def recognize_face(frame):
     - Se mantiene solo para /face-legacy y diagnostico.
     """
 
+    if reference_embedding is None:
+        return {
+            "status": "legacy_profile_missing",
+            "recognized": False,
+            "name": "PERFIL LEGACY NO DISPONIBLE",
+            "similarity": 0.0,
+            "facial_area": None,
+        }
+    
     try:
         representations = DeepFace.represent(
             img_path=frame,

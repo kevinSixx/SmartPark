@@ -2,28 +2,183 @@ services:
   db:
     image: postgres:17
     container_name: smartpark_db
-
+    restart: unless-stopped
     environment:
       POSTGRES_DB: smartpark
       POSTGRES_USER: smartpark
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD en .env}
     ports:
       - "5432:5432"
-
     volumes:
       - smartpark_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartpark -d smartpark"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - smartpark_net
 
   mqtt:
     image: eclipse-mosquitto:2
     container_name: smartpark_mqtt
-
+    restart: unless-stopped
     ports:
       - "1883:1883"
-
     volumes:
-      # Configuracion funcional versionada en la carpeta mosquitto/.
-      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - smartpark_mosquitto_data:/mosquitto/data
+      - smartpark_mosquitto_log:/mosquitto/log
+    networks:
+      - smartpark_net
+
+  ocr:
+    build:
+      context: ./ocr
+      dockerfile: Dockerfile
+    image: smartpark-ocr:1.1.0
+    container_name: smartpark-ocr
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/health', timeout=5)",
+        ]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    networks:
+      - smartpark_net
+
+  ai:
+    build:
+      context: .
+      dockerfile: ai/Dockerfile
+    image: smartpark-ai:2.8.1-cpu
+    container_name: smartpark-ai
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      OCR_SERVICE_URL: http://ocr:8002/plate
+      BACKEND_AUTHORIZE_URL: http://backend:8000/api/v1/access/authorize
+      BACKEND_FACE_MATCH_URL: http://backend:8000/api/v1/face-profiles/match
+      TRACKER_PATH: /app/ai/bytetrack_smartpark.yaml
+      FACE_MODEL_NAME: ArcFace
+      FACE_DETECTOR_BACKEND: retinaface
+      TF_CPP_MIN_LOG_LEVEL: "2"
+      TF_USE_LEGACY_KERAS: "1"
+    depends_on:
+      ocr:
+        condition: service_healthy
+    networks:
+      - smartpark_net
+
+  migrate:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: smartpark-backend:1.7.2
+    container_name: smartpark-migrate
+    restart: "no"
+    command: ["alembic", "-c", "/app/backend/alembic.ini", "upgrade", "head"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://smartpark:${POSTGRES_PASSWORD}@db:5432/smartpark
+      AUTH_SECRET_KEY: ${AUTH_SECRET_KEY:?Define AUTH_SECRET_KEY en .env}
+      AUTH_TOKEN_MINUTES: ${AUTH_TOKEN_MINUTES:-480}
+      AI_BASE_URL: http://ai:8001
+      FACE_MATCH_THRESHOLD: ${FACE_MATCH_THRESHOLD:-0.70}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      SMARTPARK_MEDIA_BUCKET: ${SMARTPARK_MEDIA_BUCKET:-}
+      AWS_IOT_ENABLED: ${AWS_IOT_ENABLED:-false}
+      AWS_IOT_ENDPOINT: ${AWS_IOT_ENDPOINT:-}
+      AWS_IOT_COMMAND_TOPIC: ${AWS_IOT_COMMAND_TOPIC:-smartpark/gates/gate-01/command}
+      BARRIER_OPEN_SECONDS: ${BARRIER_OPEN_SECONDS:-5}
+      AWS_EC2_METADATA_DISABLED: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - smartpark_net
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: smartpark-backend:1.7.2
+    container_name: smartpark-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://smartpark:${POSTGRES_PASSWORD}@db:5432/smartpark
+      AUTH_SECRET_KEY: ${AUTH_SECRET_KEY:?Define AUTH_SECRET_KEY en .env}
+      AUTH_TOKEN_MINUTES: ${AUTH_TOKEN_MINUTES:-480}
+      AI_BASE_URL: http://ai:8001
+      FACE_MATCH_THRESHOLD: ${FACE_MATCH_THRESHOLD:-0.70}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+      SMARTPARK_MEDIA_BUCKET: ${SMARTPARK_MEDIA_BUCKET:-}
+      AWS_IOT_ENABLED: ${AWS_IOT_ENABLED:-false}
+      AWS_IOT_ENDPOINT: ${AWS_IOT_ENDPOINT:-}
+      AWS_IOT_COMMAND_TOPIC: ${AWS_IOT_COMMAND_TOPIC:-smartpark/gates/gate-01/command}
+      BARRIER_OPEN_SECONDS: ${BARRIER_OPEN_SECONDS:-5}
+      AWS_EC2_METADATA_DISABLED: "true"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      ai:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)",
+        ]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - smartpark_net
+
+  frontend:
+    image: node:22-alpine
+    container_name: smartpark-frontend
+    restart: unless-stopped
+    working_dir: /app
+    command: >
+      sh -c "npm ci &&
+             npm run dev -- --host 0.0.0.0 --port 5173"
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://127.0.0.1:8000
+      VITE_EDGE_URL: http://127.0.0.1:9000
+      VITE_EDGE_STREAM_URL: http://127.0.0.1:9000/video
+    volumes:
+      - ./frontend:/app
+      - smartpark_frontend_node_modules:/app/node_modules
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - smartpark_net
 
 volumes:
   smartpark_postgres_data:
+  smartpark_mosquitto_data:
+  smartpark_mosquitto_log:
+  smartpark_frontend_node_modules:
+
+networks:
+  smartpark_net:
+    name: smartpark_net
+    driver: bridge
